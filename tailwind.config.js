@@ -1,4 +1,4 @@
-const {nextui} = require('@nextui-org/theme');
+const { nextui } = require("@nextui-org/theme");
 /** @type {import('tailwindcss').Config} */
 /* eslint-disable max-len */
 const colors = require("tailwindcss/colors");
@@ -7,7 +7,7 @@ module.exports = {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
     "./node_modules/@tremor/**/*.{js,ts,jsx,tsx}",
-    "./node_modules/@nextui-org/theme/dist/components/(date-picker|divider|button|ripple|spinner|calendar|date-input|form|popover).js"
+    "./node_modules/@nextui-org/theme/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     transparent: "transparent",
@@ -103,6 +103,9 @@ module.exports = {
     },
   },
   safelist: [
+    "dark:text-dark-tremor-content-strong",
+    "text-tremor-content-strong",
+    "dark-tremor",
     {
       pattern:
         /^(bg-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950))$/,
@@ -131,5 +134,9 @@ module.exports = {
         /^(fill-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950))$/,
     },
   ],
-  plugins: [require("@headlessui/tailwindcss"),require("@tailwindcss/forms"),nextui()],
+  plugins: [
+    require("@headlessui/tailwindcss"),
+    require("@tailwindcss/forms"),
+    nextui(),
+  ],
 };
