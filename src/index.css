@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.override-card {
+  background-color: #1f2937 !important; /* Equivalent to Tailwind's bg-blue-500 */
+}
+/* Apply the same background color to the Select component */
+.w-full.outline-none.text-left.whitespace-nowrap.truncate.rounded-tremor-default.focus\:ring-2.transition.duration-100.border.pr-8.py-2.shadow-tremor-input.focus\:border-tremor-brand-subtle.focus\:ring-tremor-brand-muted.dark\:shadow-dark-tremor-input.dark\:focus\:border-dark-tremor-brand-subtle.dark\:focus\:ring-dark-tremor-brand-muted.pl-3.bg-tremor-background.dark\:bg-dark-tremor-background.hover\:bg-tremor-background-muted.dark\:hover\:bg-dark-tremor-background-muted.text-tremor-content.dark\:text-dark-tremor-content.border-tremor-border.dark\:border-dark-tremor-border {
+  background-color: #f0f8ff !important; /* Select component background */
+}
+
+/* Change background for all expanded items */
+.tremor-SelectItem-root {
+  background-color: #f0f8ff !important; /* Background for all items */
+  color: #000 !important; /* Adjust text color if needed */
+}
+
+/* Change background for the item when it is focused */
+.tremor-SelectItem-root[data-focus] {
+  background-color: #e6f7ff !important; /* Background when focused */
+  color: #000 !important; /* Adjust text color */
+}
+
+/* Change background for the item when it is selected */
+.tremor-SelectItem-root[data-selected] {
+  background-color: #f0f8ff !important; /* Background when selected */
+  font-weight: bold; /* Optional: Make selected item bold */
+}
+/* Change background color of the Select component when an item is selected */
+.w-full.outline-none.text-left.whitespace-nowrap.truncate.rounded-tremor-default.focus\:ring-2.transition.duration-100.border.pr-8.py-2.shadow-tremor-input.focus\:border-tremor-brand-subtle.focus\:ring-tremor-brand-muted.dark\:shadow-dark-tremor-input.dark\:focus\:border-dark-tremor-brand-subtle.dark\:focus\:ring-dark-tremor-brand-muted.pl-3.bg-tremor-background.dark\:bg-dark-tremor-background.hover\:bg-tremor-background-muted.dark\:hover\:bg-dark-tremor-background-muted.text-tremor-content-emphasis.dark\:text-dark-tremor-content-emphasis.border-tremor-border.dark\:border-dark-tremor-border {
+  background-color: #f0f8ff !important; /* Ensure consistent background color */
+  color: #000 !important; /* Adjust text color if necessary */
+}
