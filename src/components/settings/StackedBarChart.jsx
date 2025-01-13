@@ -96,7 +96,7 @@ const StackedBarChart = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
     >
-      <h2 className="font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
+      <h2 className="text-lg font-medium mb-4 text-white">
         Daily number of transactions divided by status
       </h2>
       <div className="h-80">
