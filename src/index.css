@@ -31,3 +31,11 @@
   background-color: #f0f8ff !important; /* Ensure consistent background color */
   color: #000 !important; /* Adjust text color if necessary */
 }
+.text-tremor-content-strong {
+  --tw-text-opacity: 1;
+  color: rgb(248,249,250 / var(--tw-text-opacity, 1)) !important; /* Add !important */
+}
+.dark:text-dark-tremor-content-strong {
+  --tw-text-opacity: 1;
+  color: #f8f9fa !important; /* Add !important */
+}
