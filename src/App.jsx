@@ -6,6 +6,7 @@ import PaymentOptionPage from "./pages/PaymentOptionPage";
 import DPMaxPage from "./pages/DPMaxPage";
 import ConsumerPage from "./pages/ConsumerPage";
 import SignInPage from "./pages/SignInPage";
+import UserManagementPage from "./pages/UserManagementPage";
 
 import Sidebar from "./components/Sidebar";
 import AboutPage from "./pages/AboutPage";
@@ -26,6 +27,7 @@ function App() {
         <Route path="/dpmax" element={<DPMaxPage />} />
         <Route path="/consumer" element={<ConsumerPage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/userManagementPage" element={<UserManagementPage />} />
       </Routes>
     </div>
   );

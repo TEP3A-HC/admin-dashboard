@@ -36,6 +36,12 @@ const SIDEBAR_ITEMS = [
   { name: "DPMax", icon: faWallet, color: "#F59E0B", href: "/dpmax" },
   { name: "Consumer", icon: faUserSecret, color: "#3B82F6", href: "/consumer" },
   { name: "About", icon: faCircleInfo, color: "#6EE7B7", href: "/about" },
+  {
+    name: "User Management",
+    icon: faCircleInfo,
+    color: "#6EE7B7",
+    href: "/userManagement",
+  },
 ];
 
 const Sidebar = () => {
