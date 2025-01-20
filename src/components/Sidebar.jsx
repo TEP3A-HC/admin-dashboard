@@ -7,6 +7,7 @@ import {
   faWallet,
   faUserSecret,
   faCircleInfo,
+  faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import { faIdeal } from "@fortawesome/free-brands-svg-icons";
 import { useState } from "react";
@@ -38,8 +39,8 @@ const SIDEBAR_ITEMS = [
   { name: "About", icon: faCircleInfo, color: "#6EE7B7", href: "/about" },
   {
     name: "User Management",
-    icon: faCircleInfo,
-    color: "#6EE7B7",
+    icon: faUsers,
+    color: "#FFFFFF",
     href: "/userManagement",
   },
 ];
