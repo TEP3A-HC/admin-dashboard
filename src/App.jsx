@@ -27,7 +27,7 @@ function App() {
         <Route path="/dpmax" element={<DPMaxPage />} />
         <Route path="/consumer" element={<ConsumerPage />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/userManagementPage" element={<UserManagementPage />} />
+        <Route path="/userManagement" element={<UserManagementPage />} />
       </Routes>
     </div>
   );
