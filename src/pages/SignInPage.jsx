@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TextInput } from "@tremor/react";
+import { db } from "../firebaseConfig"; // Import Firebase configuration
+import { collection, getDocs } from "firebase/firestore"; // Import Firestore methods
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -9,20 +11,37 @@ export default function Login() {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted");
+    setError(""); // Clear previous error messages
 
-    // Basic login authentication logic here
-    if (username === "username123" && password === "password123") {
-      // Successful login
-      setError("");
-      alert("Login successful!");
-      navigate("/overview");
-      // Redirect to dashboard or home page (e.g., using React Router)
-    } else {
-      // Failed login
-      setError("Invalid username or password.");
+    try {
+      // Fetch all users from the Firestore "users" collection
+      const usersCollection = collection(db, "users");
+      const usersSnapshot = await getDocs(usersCollection);
+
+      // Convert Firestore data to an array of user objects
+      const users = [];
+      usersSnapshot.forEach((doc) => {
+        users.push(doc.data());
+      });
+
+      // Check if the entered username and password match any user in the database
+      const matchedUser = users.find(
+        (user) => user.username === username && user.password === password
+      );
+
+      if (matchedUser) {
+        // Successful login
+        alert("Login successful!");
+        navigate("/overview"); // Redirect to the overview page
+      } else {
+        // Failed login
+        setError("Invalid username or password.");
+      }
+    } catch (error) {
+      console.error("Error fetching users from the database:", error);
+      setError("An error occurred while logging in. Please try again later.");
     }
   };
 

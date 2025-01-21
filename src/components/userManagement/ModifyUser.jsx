@@ -11,7 +11,7 @@ import { motion } from "framer-motion";
 import { db } from "../../firebaseConfig"; // Import your Firebase configuration
 import { collection, getDocs, orderBy, query } from "firebase/firestore"; // Firebase Firestore methods
 
-export default function WorkspaceTable() {
+export default function WorkspaceTable({ isActive }) {
   const [data, setData] = useState([]); // State to store the data
   const [loading, setLoading] = useState(true); // Loading state
 
@@ -38,7 +38,7 @@ export default function WorkspaceTable() {
     };
 
     fetchUsers(); // Call the fetch function
-  }, []); // Empty dependency array ensures this effect runs only once when the component mounts
+  }, [isActive]); // Only fetch data when the tab is active
 
   if (loading) {
     return <div>Loading...</div>; // Show a loading message while data is being fetched
@@ -90,14 +90,24 @@ export default function WorkspaceTable() {
               <TableBody>
                 {data.map((item, index) => (
                   <TableRow key={index}>
-                    <TableCell className="font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                    <TableCell className="font-medium text-dark-tremor-content-strong">
                       {item.fullName}
                     </TableCell>
-                    <TableCell>{item.username}</TableCell>
-                    <TableCell>{item.password}</TableCell>
-                    <TableCell>{item.email}</TableCell>
-                    <TableCell>{item.role}</TableCell>
-                    <TableCell className="text-right">{item.status}</TableCell>
+                    <TableCell className="font-medium text-dark-tremor-content-strong">
+                      {item.username}
+                    </TableCell>
+                    <TableCell className="font-medium text-dark-tremor-content-strong">
+                      {item.password}
+                    </TableCell>
+                    <TableCell className="font-medium text-dark-tremor-content-strong">
+                      {item.email}
+                    </TableCell>
+                    <TableCell className="font-medium text-dark-tremor-content-strong">
+                      {item.role}
+                    </TableCell>
+                    <TableCell className="text-right font-medium text-dark-tremor-content-strong">
+                      {item.status}
+                    </TableCell>
                     <TableCell className="text-right">{item.Action}</TableCell>
                   </TableRow>
                 ))}
