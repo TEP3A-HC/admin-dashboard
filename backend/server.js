@@ -1,7 +1,27 @@
+import process from "node:process";
+import dotenv from "dotenv"; // Import dotenv
+import path from "path"; // Import path module
+
+dotenv.config({ path: path.resolve(process.cwd(), ".env") });
+
+console.log("🔹 Checking Environment Variables:");
+console.log(
+  "  FIREBASE_PROJECT_ID:",
+  process.env.FIREBASE_PROJECT_ID || "❌ NOT FOUND"
+);
+console.log(
+  "  FIREBASE_CLIENT_EMAIL:",
+  process.env.FIREBASE_CLIENT_EMAIL || "❌ NOT FOUND"
+);
+console.log(
+  "  FIREBASE_PRIVATE_KEY:",
+  process.env.FIREBASE_PRIVATE_KEY ? "✅ LOADED" : "❌ MISSING"
+);
+
 import express from "express"; // Import express as an ES module
 import cors from "cors"; // Import CORS
 import admin from "firebase-admin"; // Import Firebase Admin SDK
-import { readFileSync } from "fs"; // Import to read the service account key
+//import { readFileSync } from "fs"; // Import to read the service account key
 import bcrypt from "bcrypt"; // Import bcrypt for password hashing
 import jwt from "jsonwebtoken"; // Import JWT for token generation
 
@@ -11,13 +31,34 @@ const port = 4000;
 app.use(express.json()); // Middleware to parse JSON bodies
 app.use(cors());
 
-// Initialize Firebase Admin SDK
-const serviceAccount = JSON.parse(
-  readFileSync("./firebase-admin-key.json", "utf8")
+// 🔹 Debugging logs
+console.log("FIREBASE_PROJECT_ID:", process.env.FIREBASE_PROJECT_ID);
+console.log("FIREBASE_CLIENT_EMAIL:", process.env.FIREBASE_CLIENT_EMAIL);
+console.log(
+  "FIREBASE_PRIVATE_KEY:",
+  process.env.FIREBASE_PRIVATE_KEY ? "Loaded" : "MISSING"
 );
+
+// ✅ Make sure `process.env.FIREBASE_PRIVATE_KEY` is correctly formatted
+const firebaseConfig = {
+  type: process.env.FIREBASE_TYPE,
+  project_id: process.env.FIREBASE_PROJECT_ID,
+  private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
+  private_key: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"), // Fix newline issue
+  client_email: process.env.FIREBASE_CLIENT_EMAIL,
+  client_id: process.env.FIREBASE_CLIENT_ID,
+  auth_uri: process.env.FIREBASE_AUTH_URI,
+  token_uri: process.env.FIREBASE_TOKEN_URI,
+  auth_provider_x509_cert_url: process.env.FIREBASE_AUTH_PROVIDER_CERT_URL,
+  client_x509_cert_url: process.env.FIREBASE_CLIENT_CERT_URL,
+};
+
+// ✅ Now Initialize Firebase Admin SDK
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+  credential: admin.credential.cert(firebaseConfig),
 });
+
+console.log("✅ Firebase Admin SDK initialized successfully!");
 
 // Firestore reference
 const db = admin.firestore();
