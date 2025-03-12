@@ -7,6 +7,7 @@ import DPMaxPage from "./pages/DPMaxPage";
 import ConsumerPage from "./pages/ConsumerPage";
 import SignInPage from "./pages/SignInPage";
 import UserManagementPage from "./pages/UserManagementPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import Sidebar from "./components/Sidebar";
 import AboutPage from "./pages/AboutPage";
@@ -20,14 +21,70 @@ function App() {
 
       <Routes>
         <Route path="/" element={<SignInPage />} />
-        <Route path="/overview" element={<OverviewPage />} />
-        <Route path="/merchant" element={<MerchantPage />} />
-        <Route path="/acquirer" element={<AcquirerPage />} />
-        <Route path="/paymentoption" element={<PaymentOptionPage />} />
-        <Route path="/dpmax" element={<DPMaxPage />} />
-        <Route path="/consumer" element={<ConsumerPage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/userManagement" element={<UserManagementPage />} />
+        <Route
+          path="/overview"
+          element={
+            <ProtectedRoute requiredRoles={["super_admin", "viewer"]}>
+              <OverviewPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/merchant"
+          element={
+            <ProtectedRoute requiredRoles={["super_admin", "viewer"]}>
+              <MerchantPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/acquirer"
+          element={
+            <ProtectedRoute requiredRoles={["super_admin", "viewer"]}>
+              <AcquirerPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/paymentoption"
+          element={
+            <ProtectedRoute requiredRoles={["super_admin", "viewer"]}>
+              <PaymentOptionPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dpmax"
+          element={
+            <ProtectedRoute requiredRoles={["super_admin", "viewer"]}>
+              <DPMaxPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/consumer"
+          element={
+            <ProtectedRoute requiredRoles={["super_admin", "viewer"]}>
+              <ConsumerPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <ProtectedRoute requiredRoles={["super_admin", "viewer"]}>
+              <AboutPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/userManagement"
+          element={
+            <ProtectedRoute requiredRoles={["super_admin", "admin"]}>
+              <UserManagementPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </div>
   );

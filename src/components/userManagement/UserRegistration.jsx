@@ -10,8 +10,9 @@ import {
   SelectItem,
   Button,
 } from "@tremor/react";
-import { getFirestore, collection, addDoc } from "firebase/firestore"; // Import Firestore functions
-import { app } from "../../firebaseConfig"; // Import initialized Firebase app
+import Cookies from "js-cookie"; // Import js-cookie for cookie management
+//import { getFirestore, collection, addDoc } from "firebase/firestore"; // Import Firestore functions
+//import { app } from "../../firebaseConfig"; // Import initialized Firebase app
 
 const UserRegistration = () => {
   // State to track form inputs
@@ -25,7 +26,7 @@ const UserRegistration = () => {
   });
 
   // Firestore reference
-  const db = getFirestore(app);
+  //const db = getFirestore(app);
 
   // Handle input change
   const handleInputChange = (e) => {
@@ -37,9 +38,22 @@ const UserRegistration = () => {
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
 
+    const token = Cookies.get("auth_token");
+
     try {
-      // Add new document to "users" collection
-      await addDoc(collection(db, "users"), formData);
+      const response = await fetch("http://localhost:4000/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData), // Send user data to backend
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to register user");
+      }
+
       alert("User successfully added!");
       setFormData({
         fullName: "",
@@ -50,10 +64,11 @@ const UserRegistration = () => {
         status: "active",
       });
     } catch (error) {
-      console.error("Error adding user:", error);
+      console.error("Error:", error);
       alert("Failed to add user.");
     }
   };
+
   return (
     <div className="flex-1 overflow-auto relative z-10">
       <main className="max-w-7xl mx-auto py-6 px-4 lg:px-0 ">
@@ -70,7 +85,7 @@ const UserRegistration = () => {
             <Card>
               <form onSubmit={handleSubmit}>
                 <Grid numItemsMd={2} numItemsLg={2} className="gap-6">
-                  <div className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong col-span-2">
+                  <div className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong col-span-2 ">
                     <Text>Full Name</Text>
                     <TextInput
                       placeholder="Enter full name"

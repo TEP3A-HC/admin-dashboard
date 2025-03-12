@@ -13,6 +13,7 @@ import { faIdeal } from "@fortawesome/free-brands-svg-icons";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const SIDEBAR_ITEMS = [
   {
@@ -20,33 +21,69 @@ const SIDEBAR_ITEMS = [
     icon: faMoneyBillTransfer,
     color: "#6366f1",
     href: "/overview",
+    roles: ["super_admin", "viewer"],
   },
   {
     name: "Merchant",
     icon: faUserTie,
     color: "#8B5CF6",
     href: "/merchant",
+    roles: ["super_admin", "viewer"],
   },
-  { name: "Acquirer", icon: faHandshake, color: "#EC4899", href: "/acquirer" },
+  {
+    name: "Acquirer",
+    icon: faHandshake,
+    color: "#EC4899",
+    href: "/acquirer",
+    roles: ["super_admin", "viewer"],
+  },
   {
     name: "Payment Option",
     icon: faIdeal,
     color: "#10B981",
     href: "/paymentoption",
+    roles: ["super_admin", "viewer"],
   },
-  { name: "DPMax", icon: faWallet, color: "#F59E0B", href: "/dpmax" },
-  { name: "Consumer", icon: faUserSecret, color: "#3B82F6", href: "/consumer" },
-  { name: "About", icon: faCircleInfo, color: "#6EE7B7", href: "/about" },
+  {
+    name: "DPMax",
+    icon: faWallet,
+    color: "#F59E0B",
+    href: "/dpmax",
+    roles: ["super_admin", "viewer"],
+  },
+  {
+    name: "Consumer",
+    icon: faUserSecret,
+    color: "#3B82F6",
+    href: "/consumer",
+    roles: ["super_admin", "viewer"],
+  },
+  {
+    name: "About",
+    icon: faCircleInfo,
+    color: "#6EE7B7",
+    href: "/about",
+    roles: ["super_admin", "viewer"],
+  },
   {
     name: "User Management",
     icon: faUsers,
     color: "#FFFFFF",
     href: "/userManagement",
+    roles: ["super_admin", "admin"],
   },
 ];
 
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  // Retrieve the current user's role from cookies
+  const userRole = Cookies.get("user_role") || "";
+  // Filter the sidebar items based on the user's role
+  const visibleItems = SIDEBAR_ITEMS.filter((item) =>
+    item.roles.includes(userRole)
+  );
+
   return (
     <motion.div
       className={`relative z-10 transition-all duration-300 ease-in-out flex-shrink-0 ${
@@ -65,7 +102,7 @@ const Sidebar = () => {
         </motion.button>
 
         <nav className="mt-8 flex-grow">
-          {SIDEBAR_ITEMS.map((item) => (
+          {visibleItems.map((item) => (
             <Link key={item.href} to={item.href}>
               <motion.div className="flex items-center p-4 text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors mb-2">
                 <FontAwesomeIcon

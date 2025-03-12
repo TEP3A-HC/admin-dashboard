@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TextInput } from "@tremor/react";
-import { db } from "../firebaseConfig"; // Import Firebase configuration
-import { collection, getDocs } from "firebase/firestore"; // Import Firestore methods
+import Cookies from "js-cookie"; // Import js-cookie for cookie management
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -13,35 +12,47 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Clear previous error messages
+    setError(""); // Clear previous errors
 
     try {
-      // Fetch all users from the Firestore "users" collection
-      const usersCollection = collection(db, "users");
-      const usersSnapshot = await getDocs(usersCollection);
-
-      // Convert Firestore data to an array of user objects
-      const users = [];
-      usersSnapshot.forEach((doc) => {
-        users.push(doc.data());
+      const response = await fetch("http://localhost:4000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
       });
 
-      // Check if the entered username and password match any user in the database
-      const matchedUser = users.find(
-        (user) => user.username === username && user.password === password
-      );
+      console.log("Raw response:", await response.clone().text());
 
-      if (matchedUser) {
-        // Successful login
-        alert("Login successful!");
-        navigate("/overview"); // Redirect to the overview page
-      } else {
-        // Failed login
-        setError("Invalid username or password.");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Invalid username or password.");
       }
-    } catch (error) {
-      console.error("Error fetching users from the database:", error);
-      setError("An error occurred while logging in. Please try again later.");
+
+      const data = await response.json();
+      console.log("Received JWT token:", data.token);
+
+      // ✅ Store the token and roles in secure cookies
+      Cookies.set("auth_token", data.token, {
+        secure: true, // Only accessible over HTTPS
+        sameSite: "Strict",
+        expires: 1, // Expires in 1 day
+      });
+
+      Cookies.set("user_role", data.role || "", {
+        secure: true,
+        sameSite: "Strict",
+        expires: 1,
+      });
+      console.log("Role set in cookie:", Cookies.get("user_role"));
+
+      alert("Login successful!");
+      console.log("Navigating to /overview");
+      navigate("/overview");
+    } catch (err) {
+      console.error("Error during login:", err.message);
+      setError(err.message || "An error occurred. Please try again.");
     }
   };
 

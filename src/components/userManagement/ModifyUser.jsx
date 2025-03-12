@@ -8,40 +8,92 @@ import {
   TableRow,
 } from "@tremor/react";
 import { motion } from "framer-motion";
-import { db } from "../../firebaseConfig"; // Import your Firebase configuration
-import { collection, getDocs, orderBy, query } from "firebase/firestore"; // Firebase Firestore methods
+import Cookies from "js-cookie"; // To get the authentication token
+import { Trash2 } from "lucide-react"; // Import Trash Icon from lucide-react
 
 export default function WorkspaceTable({ isActive }) {
   const [data, setData] = useState([]); // State to store the data
   const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // State for errors
 
-  // Fetch users from Firestore when the component mounts
+  // Fetch users from the API when the component mounts
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        // Create a query to order by 'fullName' (you can adjust the field name as needed)
-        const usersQuery = query(
-          collection(db, "users"),
-          orderBy("fullName") // This will sort the users by 'fullName' in ascending order
-        );
-        const querySnapshot = await getDocs(usersQuery); // Firestore collection name
-        const usersData = [];
-        querySnapshot.forEach((doc) => {
-          usersData.push(doc.data()); // Assuming you're storing user data in Firestore
-        });
-        setData(usersData); // Update state with fetched data
-      } catch (error) {
-        console.error("Error fetching users: ", error);
-      } finally {
-        setLoading(false); // Set loading to false once the data is fetched
-      }
-    };
+    fetchUsers();
+  }, [isActive]);
 
-    fetchUsers(); // Call the fetch function
-  }, [isActive]); // Only fetch data when the tab is active
+  const fetchUsers = async () => {
+    try {
+      const authToken = Cookies.get("auth_token"); // Get the correct token
+      console.log("Fetched auth_token from cookies:", authToken);
+
+      if (!authToken) {
+        console.error("No auth_token found in cookies.");
+        setError("Authorization token is missing.");
+        return;
+      }
+
+      const response = await fetch("http://localhost:4000/all-users", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${authToken}`, // Send the correct token
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Response status:", response.status); // Log response
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error response:", errorData);
+        throw new Error(errorData.error || "Failed to fetch users.");
+      }
+
+      const data = await response.json();
+      console.log("Fetched user data:", data);
+      setData(data.users); // Store users in state
+    } catch (err) {
+      console.error("Error fetching users:", err);
+      setError(err.message || "An error occurred while fetching users.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteUser = async (userId) => {
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
+
+    try {
+      const authToken = Cookies.get("auth_token");
+      const response = await fetch(
+        `http://localhost:4000/delete-user/${userId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to delete user.");
+      }
+
+      alert("User deleted successfully!");
+      fetchUsers(); // Refresh users after deletion
+    } catch (err) {
+      console.error("Error deleting user:", err);
+      alert("Failed to delete user.");
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>; // Show a loading message while data is being fetched
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>; // Show error message if any
   }
 
   return (
@@ -71,9 +123,6 @@ export default function WorkspaceTable({ isActive }) {
                     Username
                   </TableHeaderCell>
                   <TableHeaderCell className="text-dark-tremor-content-strong">
-                    Password
-                  </TableHeaderCell>
-                  <TableHeaderCell className="text-dark-tremor-content-strong">
                     Email
                   </TableHeaderCell>
                   <TableHeaderCell className="text-dark-tremor-content-strong">
@@ -88,27 +137,33 @@ export default function WorkspaceTable({ isActive }) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data.map((item, index) => (
-                  <TableRow key={index}>
+                {data.map((user) => (
+                  <TableRow key={user.id}>
                     <TableCell className="font-medium text-dark-tremor-content-strong">
-                      {item.fullName}
-                    </TableCell>
-                    <TableCell className="font-medium text-dark-tremor-content-strong">
-                      {item.username}
+                      {user.fullName}
                     </TableCell>
                     <TableCell className="font-medium text-dark-tremor-content-strong">
-                      {item.password}
+                      {user.username}
                     </TableCell>
                     <TableCell className="font-medium text-dark-tremor-content-strong">
-                      {item.email}
+                      {user.email}
                     </TableCell>
                     <TableCell className="font-medium text-dark-tremor-content-strong">
-                      {item.role}
+                      {user.role}
                     </TableCell>
-                    <TableCell className="text-right font-medium text-dark-tremor-content-strong">
-                      {item.status}
+                    <TableCell className="font-medium text-dark-tremor-content-strong text-right">
+                      {user.status}
                     </TableCell>
-                    <TableCell className="text-right">{item.Action}</TableCell>
+                    <TableCell className="text-right">
+                      {/* Trash Can Button */}
+                      <button
+                        onClick={() => handleDeleteUser(user.id)}
+                        className="p-1 text-red-500 hover:text-red-700"
+                        title="Delete User"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
