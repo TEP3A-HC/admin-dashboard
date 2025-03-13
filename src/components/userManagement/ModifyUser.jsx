@@ -32,13 +32,16 @@ export default function WorkspaceTable({ isActive }) {
         return;
       }
 
-      const response = await fetch("http://localhost:4000/all-users", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${authToken}`, // Send the correct token
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/all-users`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${authToken}`, // Send the correct token
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       console.log("Response status:", response.status); // Log response
 
@@ -65,7 +68,7 @@ export default function WorkspaceTable({ isActive }) {
     try {
       const authToken = Cookies.get("auth_token");
       const response = await fetch(
-        `http://localhost:4000/delete-user/${userId}`,
+        `${import.meta.env.VITE_API_BASE_URL}/delete-user/${userId}`,
         {
           method: "DELETE",
           headers: {

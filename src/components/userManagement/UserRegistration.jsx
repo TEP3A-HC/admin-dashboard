@@ -41,14 +41,17 @@ const UserRegistration = () => {
     const token = Cookies.get("auth_token");
 
     try {
-      const response = await fetch("http://localhost:4000/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData), // Send user data to backend
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(formData), // Send user data to backend
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to register user");
